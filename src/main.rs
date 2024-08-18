@@ -1,8 +1,16 @@
 use std::env;
+use std::process;
+use cmdtool::Config;
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let query = &args[1];
-    let file = &args[2];
-    println!("Query is {query}");
-    println!("File is {file}");
+    let config = Config::build(&args).unwrap_or_else(|err| {
+        eprintln!("Problem passing arguments: {err}");
+        process::exit(1);
+    });
+    // println!("Searching for {}", config.query);
+    // println!("In file name {}", config.file_path);
+    if let Err(e) = cmdtool::run(config) {
+        eprintln!("Application error: {e}");
+        process::exit(1);
+    }
 }
